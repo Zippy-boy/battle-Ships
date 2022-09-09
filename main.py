@@ -10,6 +10,8 @@ Batle Ships
 
 """
 import random
+import curses
+from curses import wrapper
 
 
 class Ship:
@@ -32,11 +34,12 @@ class Ship:
         return self.sunk
 
 class Board:
-    def __init__(self):
+    def __init__(self, stdscr):
         self.board = []
         self.dummy_board = []
         self.create_board()
         self.create_dummy_board()
+        self.stdscr = stdscr
 
     def create_dummy_board(self):
         for i in range(10):
@@ -77,6 +80,12 @@ class Board:
             return False
                 
     def print_board(self):
+        # get mid of board
+        mid = int(len(self.board) / 2)
+        # print numbers in top row
+        
+
+
         print('     1  2  3  4  5  6  7  8  9  10')
         print('  -------------------------------------')
         count = 0
@@ -218,9 +227,11 @@ def computer_take_shot(userBoard, ComBoard):
     
     userBoard.print_board()
 
-def main():
-    UserBoard = Board()
-    ComputerBoard = Board()
+def main(stdscr):
+    stdscr.clear()
+
+    UserBoard = Board(stdscr)
+    ComputerBoard = Board(stdscr)
     User = Player("Player")
     computer = Computer("Computer")
 
@@ -236,13 +247,16 @@ def main():
         if ComputerBoard.board.count('H') == 16:
             print("Computer won!")
             game_ended = True
-        
+        stdscr.refresh()
+        if stdscr.getch() == ord('q'):
+            game_ended = True
+            break
 
     
 
 
 
 if __name__ == "__main__":
-    main()
+    wrapper(main)
 
 
